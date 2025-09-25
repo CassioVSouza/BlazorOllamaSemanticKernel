@@ -1,0 +1,32 @@
+﻿@page "/counter"
+@using System.Threading.Tasks
+@rendermode InteractiveServer
+@inject IIAIntegrationService IAService
+
+<PageTitle>Counter</PageTitle>
+
+<div class="d-flex flex-column gap-1">
+    <span>@status</span>
+    <InputTextArea class="form-control-plaintext" style="padding: 10px; border: 1px solid black; border-radius: 20px;" @bind-Value="prompt"></InputTextArea>
+    @if(_answer != "")
+    {
+        <span style="border: 1px solid black; padding: 10px; border-radius: 10px;">@_answer</span>
+    }
+    <button @onclick="GetIAAnswer" class="btn btn-group btn-primary" style="width: 5%;">Send</button>
+</div>
+
+
+@code {
+    private string prompt = "";
+    private string status = "Disponível";
+    private string _answer = "";
+
+
+    private async Task GetIAAnswer()
+    {
+        status = "Pensando...";
+        var answer = await IAService.GetIAAnserViaSemanticKernel(prompt);
+        _answer = answer ?? "Answer was null";
+        status = "Disponível";
+    }
+}
